@@ -23,6 +23,10 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/users/", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    return crud.create_user(db=db, user=user)
+
 @app.get("/profiles/{id}", response_model=schemas.Profile)
 def read_profile(id: int, db: Session = Depends(get_db)):
     logger.info(f"Fetching profile with id: {id}")

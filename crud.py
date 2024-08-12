@@ -15,3 +15,10 @@ def get_usernames(db: Session, skip: int = 0, limit: int = 50):
 
 def get_profile_by_username(db: Session, username: str):
     return db.query(models.Profile).filter(models.Profile.username == username).first()
+
+def create_user(db: Session, user: schemas.UserCreate):
+    db_user = models.User(username=user.username, password=user.password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

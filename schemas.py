@@ -1,6 +1,25 @@
 #Pydantic models
 from pydantic import BaseModel, field_validator, constr, ConfigDict, Field
 
+class UserBase(BaseModel):
+    username: constr(strip_whitespace=True) # type: ignore
+    password: constr(strip_whitespace=True) # type: ignore
+
+    @field_validator('*', mode='before') # We should ensure that validation is done for avoid mismatching problmes
+    def ensure_string(cls, v):
+        if v is None:
+            return ""
+        return str(v)
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class User(UserBase):
+    id: int = Field(..., alias="id")
+    model_config = ConfigDict(from_attributes=True)
+
+class UserCreate(UserBase):
+    pass
+
 class ProfileBase(BaseModel): # We constrain values to make them readable for pydantic and API
     username: constr(strip_whitespace=True) # type: ignore
     name: constr(strip_whitespace=True) # type: ignore
