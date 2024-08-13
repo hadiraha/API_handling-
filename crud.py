@@ -1,6 +1,7 @@
 #CRUD operations
 from sqlalchemy.orm import Session
 import models, schemas
+import bcrypt
 
 ##Get one profiles
 def get_profile(db: Session, id: int):
@@ -17,7 +18,8 @@ def get_profile_by_username(db: Session, username: str):
     return db.query(models.Profile).filter(models.Profile.username == username).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(username=user.username, password=user.password)
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
+    db_user = models.User(username=user.username, password=hashed_password.decode('utf-8'))
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
