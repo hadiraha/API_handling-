@@ -1,16 +1,16 @@
 #SQLAlchemy models
-from sqlalchemy import Column, Integer, Text, DateTime, func, UniqueConstraint
+from sqlalchemy import Column, Integer, Text, DateTime, func, UniqueConstraint, String
 from database import Base
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index= True)
-    username = Column(Text, unique=True, nullable=False)
+    username = Column(String(100) , unique=True, nullable=False)
     password = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_arg__ = (
-        UniqueConstraint()
+        UniqueConstraint('username', name = 'uix_username')
     )
 
 class Profile(Base):

@@ -17,7 +17,7 @@ class User(UserBase):
     id: int = Field(..., alias="id")
     model_config = ConfigDict(from_attributes=True)
 
-class UserCreate(User):
+class UserCreate(UserBase):
     pass
 
 class ProfileBase(BaseModel): # We constrain values to make them readable for pydantic and API

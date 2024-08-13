@@ -1,7 +1,12 @@
 #CRUD operations
+import logging
 from sqlalchemy.orm import Session
 import models, schemas
 import bcrypt
+
+# Setup logging
+logging.basicConfig(level= logging.INFO)
+logger = logging.getLogger(__name__)
 
 ##Get one profiles
 def get_profile(db: Session, id: int):
@@ -17,9 +22,14 @@ def get_usernames(db: Session, skip: int = 0, limit: int = 50):
 def get_profile_by_username(db: Session, username: str):
     return db.query(models.Profile).filter(models.Profile.username == username).first()
 
-def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
-    db_user = models.User(username=user.username, password=hashed_password.decode('utf-8'))
+def create_user(db: Session, username: str, password: str):
+    ## Check if the username already exists or not if yes raise error if not continue
+    existing_user = db.query(models.User).filter(models.User.username == username).first()
+    if existing_user:
+        raise ValueError("username already exists!!! Enter another")
+    
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    db_user = models.User(username=username, password=hashed_password.decode('utf-8'))
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

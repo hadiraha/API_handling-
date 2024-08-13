@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static/register", StaticFiles(directory= r"static\register"), name="static")
 
 database.init_db()
 
@@ -25,7 +26,7 @@ def get_db():
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    return crud.create_user(db=db, user=user)
+    return crud.create_user(db=db, username=user.username, password=user.password)
 
 @app.get("/profiles/{id}", response_model=schemas.Profile)
 def read_profile(id: int, db: Session = Depends(get_db)):
