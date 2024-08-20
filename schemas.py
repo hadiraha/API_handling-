@@ -42,11 +42,4 @@ class ProfileBase(BaseModel): # We constrain values to make them readable for py
 
 class Profile(ProfileBase):
     id: int = Field(..., alias="id")
-
-    # @field_validator('*', mode='before')
-    # def ensure_string(cls, v):
-    #     if v is None:
-    #         return ""
-    #     return str(v)
-
     model_config = ConfigDict(from_attributes=True)

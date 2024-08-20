@@ -34,3 +34,12 @@ def create_user(db: Session, username: str, password: str):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_user_by_username(db: Session, username: str):
+    return db.query(models.User).filter(models.User.username == username).first()
+
+def authentication_user(db: Session, username: str, password: str):
+    user = get_user_by_username(db, username)
+    if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        return None
+    return user

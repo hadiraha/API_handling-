@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchUsernames(skip = 0, limit = 10){
         try{
-            const response = await fetch(`/usernames?skip=${skip}&limit=${limit}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/usernames?skip=${skip}&limit=${limit}`, {
+                method: 'GET',
+                headers: {'Authorization': `Bearer ${token}`,}
+            });
             if (!response.ok){
                 throw new Error(`An error has taken place: ${response.statusText}`);
             }
@@ -36,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function fetchProfile(username){
         try {
-            const response = await fetch(`/profiles/username/${username}`);
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/profiles/username/${username}`, {
+                method: 'GET',
+                headers: {'Authorization': `Bearer ${token}`,}
+            });
             if (!response.ok){
                 throw new Error(`An error has taken place: ${response.statusText}`);
             }
